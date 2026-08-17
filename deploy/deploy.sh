@@ -21,15 +21,16 @@ docker run -d \
 echo "Waiting for application..."
 
 for i in {1..10}; do
-    if curl -fsS "http://127.0.0.1:${PORT}/health" >/dev/null; then
+    if curl -fsS "http://127.0.0.1:${PORT}/health" >/dev/null 2>&1; then
         echo "Deployment successful."
         exit 0
     fi
 
+    echo "Health check failed, retrying... (${i}/10)"
     sleep 2
 done
 
-echo "Health check failed."
+echo "Health check failed after 10 attempts."
 
 docker logs "${CONTAINER_NAME}" || true
 exit 1
